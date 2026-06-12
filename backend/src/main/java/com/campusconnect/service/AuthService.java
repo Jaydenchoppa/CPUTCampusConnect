@@ -1,6 +1,7 @@
 package com.campusconnect.service;
 
 import com.campusconnect.exception.UserAlreadyExistsException;
+import com.campusconnect.model.Role;
 import com.campusconnect.repository.UserRepository;
 import com.campusconnect.dto.request.LoginRequest;
 import com.campusconnect.dto.request.RegistrationRequest;
@@ -23,19 +24,25 @@ public class AuthService {
     private final JwtUtils jwtUtils;
 
     public String register(RegistrationRequest registrationRequest) {
-        if (userRepository.existsByEmail(registrationRequest.email())) {
+        String lowerCaseEmail = registrationRequest.email().toLowerCase();
+        if (userRepository.existsByEmail(lowerCaseEmail)) {
             throw new UserAlreadyExistsException("User with email: " + registrationRequest.email() + " already exists");
+        }
+
+        Role requestedRole = registrationRequest.role();
+        if (requestedRole == Role.ADMIN) {
+            throw new IllegalArgumentException("You cannot register as an Admin!");
         }
 
         User user = User.builder()
                 .fullName(registrationRequest.fullName())
-                .email(registrationRequest.email())
+                .email(lowerCaseEmail)
                 .passwordHash(passwordEncoder.encode(registrationRequest.password()))
-                .role(registrationRequest.role())
+                .role(requestedRole)
                 .build();
 
         userRepository.save(user);
-        return "User registered successfully";
+        return jwtUtils.generateToken(user);
     }
 
     public String login(LoginRequest loginRequest) {
