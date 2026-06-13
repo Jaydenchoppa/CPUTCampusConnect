@@ -5,8 +5,6 @@ export interface BackendErrorResponse {
     timestamp: string;
 }
 
-// You can also add other global API types here later!
-// For example, what an Event or User looks like:
 export interface UserProfile {
     userId: string;
     fullName: string;
