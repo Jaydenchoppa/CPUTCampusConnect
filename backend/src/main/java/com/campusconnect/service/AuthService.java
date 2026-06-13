@@ -46,7 +46,7 @@ public class AuthService {
     }
 
     public String login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
         );
 
