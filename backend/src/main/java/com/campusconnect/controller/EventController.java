@@ -1,18 +1,20 @@
 package com.campusconnect.controller;
 
-import com.campusconnect.domain.Event;
+import com.campusconnect.model.Event;
 import com.campusconnect.service.EventService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
-@RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
+
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @GetMapping
     public List<Event> getAllEvents() {
@@ -49,10 +51,7 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event event) {
         return eventService.getEventById(id)
-                .map(existing -> {
-                    event.setEventId(id);
-                    return ResponseEntity.ok(eventService.saveEvent(event));
-                })
+                .map(existing -> ResponseEntity.ok(eventService.saveEvent(event)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

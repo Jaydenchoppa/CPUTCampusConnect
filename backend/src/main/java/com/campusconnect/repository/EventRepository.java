@@ -1,7 +1,7 @@
 package com.campusconnect.repository;
 
-import com.campusconnect.domain.Event;
-import com.campusconnect.domain.Event.Status;
+import com.campusconnect.model.Event;
+import com.campusconnect.model.Event.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
@@ -18,5 +18,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByEventTitleContainingIgnoreCase(String keyword);
 
-    List<Event> findByOrganizer_UserId(Long organizerId);
+    List<Event> findByOrganizer_UserId(java.util.UUID organizerId);
 }

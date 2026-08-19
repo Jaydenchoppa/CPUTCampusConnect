@@ -1,19 +1,22 @@
 package com.campusconnect.service;
 
-import com.campusconnect.domain.Event;
-import com.campusconnect.domain.Event.Status;
+import com.campusconnect.model.Event;
+import com.campusconnect.model.Event.Status;
 import com.campusconnect.repository.EventRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
+
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -39,7 +42,7 @@ public class EventService {
         return eventRepository.findByEventTitleContainingIgnoreCase(keyword);
     }
 
-    public List<Event> getEventsByOrganizer(Long organizerId) {
+    public List<Event> getEventsByOrganizer(UUID organizerId) {
         return eventRepository.findByOrganizer_UserId(organizerId);
     }
 

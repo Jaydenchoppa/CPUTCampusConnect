@@ -1,29 +1,33 @@
 package com.campusconnect.service;
 
-import com.campusconnect.domain.Registration;
+import com.campusconnect.model.Registration;
 import com.campusconnect.repository.RegistrationRepository;
 import com.campusconnect.repository.EventRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class RegistrationService {
 
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
 
+    public RegistrationService(RegistrationRepository registrationRepository,
+                               EventRepository eventRepository) {
+        this.registrationRepository = registrationRepository;
+        this.eventRepository = eventRepository;
+    }
+
     public List<Registration> getRegistrationsByEvent(Long eventId) {
         return registrationRepository.findByEvent_EventId(eventId);
     }
 
-    public List<Registration> getRegistrationsByUser(Long userId) {
+    public List<Registration> getRegistrationsByUser(UUID userId) {
         return registrationRepository.findByUser_UserId(userId);
     }
 
-    public Boolean isUserRegistered(Long userId, Long eventId) {
+    public Boolean isUserRegistered(UUID userId, Long eventId) {
         return registrationRepository.existsByUser_UserIdAndEvent_EventId(userId, eventId);
     }
 

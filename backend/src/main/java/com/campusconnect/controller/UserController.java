@@ -1,18 +1,21 @@
 package com.campusconnect.controller;
 
-import com.campusconnect.domain.User;
+import com.campusconnect.model.User;
 import com.campusconnect.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -20,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -35,24 +38,21 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        if (userService.emailExists(user.getUserEmail())) {
+        if (userService.emailExists(user.getEmail())) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
-        return ResponseEntity.ok(userService.saveUser(user));
+        return ResponseEntity.ok(userService.registerUser(user));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User user) {
         return userService.getUserById(id)
-                .map(existing -> {
-                    user.setUserId(id);
-                    return ResponseEntity.ok(userService.saveUser(user));
-                })
+                .map(existing -> ResponseEntity.ok(userService.saveUser(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

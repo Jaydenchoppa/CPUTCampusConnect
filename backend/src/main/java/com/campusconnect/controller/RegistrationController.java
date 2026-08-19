@@ -1,18 +1,21 @@
 package com.campusconnect.controller;
 
-import com.campusconnect.domain.Registration;
+import com.campusconnect.model.Registration;
 import com.campusconnect.service.RegistrationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/registrations")
-@RequiredArgsConstructor
 public class RegistrationController {
 
     private final RegistrationService registrationService;
+
+    public RegistrationController(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
 
     @GetMapping("/event/{eventId}")
     public List<Registration> getRegistrationsByEvent(@PathVariable Long eventId) {
@@ -20,7 +23,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<Registration> getRegistrationsByUser(@PathVariable Long userId) {
+    public List<Registration> getRegistrationsByUser(@PathVariable UUID userId) {
         return registrationService.getRegistrationsByUser(userId);
     }
 
