@@ -41,4 +41,18 @@ public class RegistrationController {
         registrationService.deleteRegistration(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/attend")
+    public ResponseEntity<?> markAttendance(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(registrationService.markAttended(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/event/{eventId}/attendees")
+    public List<Registration> getAttendeeList(@PathVariable Long eventId) {
+        return registrationService.getAttendeeList(eventId);
+    }
 }

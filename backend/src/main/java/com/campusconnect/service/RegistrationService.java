@@ -44,6 +44,17 @@ public class RegistrationService {
         return registrationRepository.save(registration);
     }
 
+    public Registration markAttended(Long registrationId) {
+        Registration registration = registrationRepository.findById(registrationId)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+        registration.setAttended(true);
+        return registrationRepository.save(registration);
+    }
+
+    public List<Registration> getAttendeeList(Long eventId) {
+        return registrationRepository.findByEvent_EventIdAndAttendedTrue(eventId);
+    }
+
     public void deleteRegistration(Long id) {
         registrationRepository.deleteById(id);
     }
